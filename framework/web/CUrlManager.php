@@ -203,7 +203,7 @@ class CUrlManager extends CApplicationComponent
 	public function init()
 	{
 		parent::init();
-		$this->processRules();
+		$this->processRules();      //主要作用，就是初始化一些rules
 	}
 
 	/**

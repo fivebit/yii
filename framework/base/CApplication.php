@@ -129,7 +129,7 @@ abstract class CApplication extends CModule
 		Yii::setApplication($this);
 
 		// set basePath at early as possible to avoid trouble
-		if(is_string($config))
+		if(is_string($config))      //对于传入的是个配置文件路径的处理
 			$config=require($config);
 		if(isset($config['basePath']))
 		{
@@ -137,7 +137,7 @@ abstract class CApplication extends CModule
 			unset($config['basePath']);
 		}
 		else
-			$this->setBasePath('protected');
+			$this->setBasePath('protected');        //当前index.php脚本所在目录下的protected目录
 		Yii::setPathOfAlias('application',$this->getBasePath());
 		Yii::setPathOfAlias('webroot',dirname($_SERVER['SCRIPT_FILENAME']));
 		if(isset($config['extensionPath']))

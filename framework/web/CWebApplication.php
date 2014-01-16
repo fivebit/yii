@@ -146,7 +146,7 @@ class CWebApplication extends CApplication
 	 * This method overrides the parent implementation by registering additional core components.
 	 * @see setComponents
 	 */
-	protected function registerCoreComponents()
+	protected function registerCoreComponents() //针对于web的应用，还有自己的核心组件要注册，只是注册，没有初始化
 	{
 		parent::registerCoreComponents();
 
@@ -542,6 +542,6 @@ class CWebApplication extends CApplication
 	{
 		parent::init();
 		// preload 'request' so that it has chance to respond to onBeginRequest event.
-		$this->getRequest();
+		$this->getRequest();    //初始化Request对象
 	}
 }

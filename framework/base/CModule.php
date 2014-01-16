@@ -270,7 +270,7 @@ abstract class CModule extends CComponent
 	{
 		if(isset($this->_modules[$id]) || array_key_exists($id,$this->_modules))
 			return $this->_modules[$id];
-		elseif(isset($this->_moduleConfig[$id]))
+		elseif(isset($this->_moduleConfig[$id]))    //这个_moduleConfig存放的是app下面所有的目录信息,默认的都认为是module
 		{
 			$config=$this->_moduleConfig[$id];
 			if(!isset($config['enabled']) || $config['enabled'])
@@ -374,18 +374,18 @@ abstract class CModule extends CComponent
 	 */
 	public function getComponent($id,$createIfNull=true)
 	{
-		if(isset($this->_components[$id]))
+		if(isset($this->_components[$id]))      //这里面是是初始化好了的内部对象
 			return $this->_components[$id];
 		elseif(isset($this->_componentConfig[$id]) && $createIfNull)
-		{
+		{   //未初始化的类属性，放在这个里面
 			$config=$this->_componentConfig[$id];
 			if(!isset($config['enabled']) || $config['enabled'])
 			{
 				Yii::trace("Loading \"$id\" application component",'system.CModule');
 				unset($config['enabled']);
 				$component=Yii::createComponent($config);
-				$component->init();
-				return $this->_components[$id]=$component;
+				$component->init(); //需要符合这个规范,都需要有init方法
+				return $this->_components[$id]=$component;  //最后有放回初始化完毕的队列。这地方有延迟初始化的用处
 			}
 		}
 	}
@@ -404,6 +404,7 @@ abstract class CModule extends CComponent
 	 * If set to false, the existing configuration will be replaced completely.
 	 * This parameter is available since 1.1.13.
 	 */
+    //只有内部的类，才会init，初始化该对象
 	public function setComponent($id,$component,$merge=true)
 	{
 		if($component===null)
@@ -432,7 +433,7 @@ abstract class CModule extends CComponent
 			foreach($component as $key=>$value)
 			{
 				if($key!=='class')
-					$this->_components[$id]->$key=$value;
+					$this->_components[$id]->$key=$value;   //调用魔术方法，初始化一些信息
 			}
 		}
 		elseif(isset($this->_componentConfig[$id]['class'],$component['class'])
@@ -505,7 +506,7 @@ abstract class CModule extends CComponent
 	 * Configures the module with the specified configuration.
 	 * @param array $config the configuration array
 	 */
-	public function configure($config)
+	public function configure($config)      //调用魔术方法，初始化一些组件等,如setDefaultConntroller,preload setComponents
 	{
 		if(is_array($config))
 		{
@@ -517,7 +518,7 @@ abstract class CModule extends CComponent
 	/**
 	 * Loads static application components.
 	 */
-	protected function preloadComponents()
+	protected function preloadComponents()      //预先需要初始化的类。
 	{
 		foreach($this->preload as $id)
 			$this->getComponent($id);
